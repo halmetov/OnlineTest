@@ -1,0 +1,66 @@
+{% if not active_test %}
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="/static/style2.css">
+	<script src="/static/js/jquery.js"></script>
+	<title>Test</title>
+</head>
+<body>
+{% csrf_token %}
+<div class="body">
+<div class="nav">
+	{{ current_user.last_name }} {{ current_user.first_name }}
+</div>
+
+<div class="container">
+	<div class="left-container"><br>
+
+		<h1>{{ current_user.last_name }} {{ current_user.first_name }} {{ current_user.clas.title }}</h1>
+
+		<h1>Предметы :</h1>
+        {% for test in tests %}
+		<div class="subject-title js-subject" data-id="{{ test.id }}">
+			{{ test.title }} --> {{ test.subject.title }}
+		</div>
+        {% endfor %}
+        <br>
+	</div>
+</div>
+
+
+</div>
+
+<script>
+	$('.js-subject').click(function(){
+		var csrfmiddlewaretoken = $('[name="csrfmiddlewaretoken"]').val();
+        var test_id = $(this).data('id');
+        var oData = {
+          'test_id': test_id,
+          'action': 'start_test',
+          'csrfmiddlewaretoken': csrfmiddlewaretoken
+        }
+
+		if(confirm("Вы действительно хотите начать тест?")){
+			$.ajax({
+			  type: 'POST',
+			  url: '/',
+			  dataType: 'json',
+			  data: oData,
+			  success: function(){
+				location.reload();
+			  }
+			})
+		}
+
+
+        return false;
+	})
+</script>
+</body>
+</html>
+{% else %}
+
+{% include 'active-test.html' %}
+
+{% endif %}
