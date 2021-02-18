@@ -130,3 +130,17 @@ def davayHandler(request):
     request.session['active_test_id'] = None
 
     return render(request, 'davay.html')
+
+
+def resultsHandler(request):
+    if not request.user.is_authenticated:
+        tests = []
+        current_user = request.session.get('user_id', None)
+        if current_user:
+            current_user = User.objects.get(id=int(current_user))
+            if current_user:
+                tests = UserTestItem.objects.filter(user__id=int(current_user.id))
+    else:
+        tests = UserTestItem.objects.all()
+
+    return render(request, 'results.html', {'tests':tests})

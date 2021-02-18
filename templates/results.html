@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+</head>
+<body>
+<a href="/"> HOME </a>
+
+<table border="1">
+    <tr>
+        <th>FIO</th>
+        <th>title</th>
+        <th>start time</th>
+        <th>bal</th>
+    </tr>
+    {% for tt in tests %}
+    <tr>
+        <td>{{ tt.user }}</td>
+        <td>{{ tt.test.title }}</td>
+        <td>{{ tt.start_date }}</td>
+        <td>{{ tt.ball }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
