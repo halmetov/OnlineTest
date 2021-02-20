@@ -4,12 +4,12 @@
 	<link rel="stylesheet" type="text/css" href="/static/style2.css">
 	<title>Test</title>
 	<script src="/static/js/jquery.js"></script>
+	<script src="/static/js/script.js"></script>
 
 </head>
 <body>
 {% csrf_token %}
 
-<div class="body">
 <div class="nav">
 	{{ current_user.last_name }} {{ current_user.first_name }}
 </div>
@@ -19,17 +19,9 @@
 		<div class="time">
 			<h1>{{ current_user.last_name }} {{ current_user.first_name }} {{ current_user.clas.title }}</h1>
 			<h1>Тесты для {{ current_user.clas.title }}-го класса онлайн: Английский язык</h1>
-			<div id="countdown" class="countdown">
-				<div class="countdown-number">
-					<span class="minutes countdown-time">10</span>
-				    <span class="countdown-text"></span>
-				</div>
-				<div class="countdown-number">
-				    <span class="seconds countdown-time">10</span>
-				    <span class="countdown-text"></span>
-				</div>
+			<div id="countdown">
+				time
 			</div>
-
 			<hr class="hr-2">
 		</div>
 		<div class="subject-title">
@@ -74,10 +66,9 @@
 
 		<hr class="hr-2"><br>
 	</div>
-</div>
 
 
-</div>
+
 
 
 <script>
@@ -171,8 +162,10 @@
 </script>
 <style>
 	.js-question-item.active{
-		background-color:red;
+		background-color:#d2c7f3;
+		border: 1px solid #a88dd3;
 	}
+
 </style>
 </body>
 </html>

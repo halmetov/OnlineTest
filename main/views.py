@@ -143,4 +143,4 @@ def resultsHandler(request):
     else:
         tests = UserTestItem.objects.all()
 
-    return render(request, 'results.html', {'tests':tests})
+    return render(request, 'results.html', {'tests': tests})
