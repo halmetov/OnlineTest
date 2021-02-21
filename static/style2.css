@@ -186,7 +186,7 @@ input {
     box-shadow: 2px 2px 6px 0 rgb(133 133 133 / 77%);
 }
 
-#prev , #next {
+#prev , #next, #endbtn {
 	display: inline;
     padding: 7px;
     width: auto;
