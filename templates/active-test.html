@@ -4,7 +4,27 @@
 	<link rel="stylesheet" type="text/css" href="/static/style2.css">
 	<title>Test</title>
 	<script src="/static/js/jquery.js"></script>
-	<script src="/static/js/script.js"></script>
+	<script>
+		const startingMinutes = {{ left_time }};
+		let time = startingMinutes;
+
+		const countDownEl = document.getElementById("countdown");
+		var interval = setInterval(updateCountdown, 1000);
+		function updateCountdown() {
+		console.log(time);
+		  const minutes = Math.floor(time / 60 );
+		  let seconds = time  % 60;
+		  seconds = seconds < 10 ? "0" + seconds:
+		  seconds;
+		  document.getElementById("countdown").innerHTML = "Оставшаяся время: " + minutes + ":" + seconds;
+		  time--;
+		  console.log(time);
+		  if(time<=0){
+			$('.js-end-test').click();
+			clearInterval(interval);
+		  }
+		}
+	</script>
 
 </head>
 <body>
@@ -18,14 +38,14 @@
 	<div class="left-container"><br>
 		<div class="time">
 			<h1>{{ current_user.last_name }} {{ current_user.first_name }} {{ current_user.clas.title }}</h1>
-			<h1>Тесты для {{ current_user.clas.title }}-го класса онлайн: Английский язык</h1>
-			<div id="countdown">
-				time
+			<h1>Тесты для {{ current_user.clas.title }}a</h1>
+			<div class="js-time" id="countdown" data-id="{{ left_time }}">
+				Оставшееся время:  {% if left_time_min < 10  %}0{% endif %}{{ left_time_min }}:{% if left_time_sec < 10  %}0{% endif %}{{ left_time_sec }}
 			</div>
 			<hr class="hr-2">
 		</div>
 		<div class="subject-title">
-			Английский язык
+			{{ active_test.test.subject.title }}
 		</div>
 		<hr class="hr-2">
 		<div class="nav-numbers">
@@ -62,8 +82,9 @@
 		</div>
 
 		<hr class="hr-2">
-			<div class="count">Вопрос № 13 / 70</div>
-
+			<div class="count">Вопрос №
+				{% for atq in active_test_questions %}{% if atq.id == test_question.id %}{{ forloop.counter }}{% endif %}{% endfor %} / {{ active_test_questions|length }}
+			</div>
 		<hr class="hr-2"><br>
 	</div>
 
@@ -154,7 +175,7 @@
 		  dataType: 'json',
 		  data: oData,
 		  success: function(){
-			location.reload();
+			location.pathname = '/results';
 		  }
 		})
 	})

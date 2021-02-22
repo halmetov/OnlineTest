@@ -21,11 +21,20 @@ def indexHandler (request):
     active_test_questions = []
     classs = []
     active_test = None
+    left_time_min = 0
+    left_time_sec = 0
+    left_time = 0
     if current_user:
         tests = Test.objects.all()
         current_user = User.objects.get(id=int(current_user))
         if active_test_id:
             active_test = UserTestItem.objects.get(id=int(active_test_id))
+            left_time = active_test.stop_date - timezone.now()
+            left_time = int(left_time.total_seconds())
+            if left_time < 0:
+                left_time = 0
+            left_time_min = int(left_time/60)
+            left_time_sec = int(left_time%60)
             active_test_questions = TestItem.objects.filter(test__id=int(active_test.test.id))
 
             if test_question_id:
@@ -123,6 +132,9 @@ def indexHandler (request):
         'test_question':test_question,
         'choosen_variant_info': choosen_variant_info,
         'endtest': endtest,
+        'left_time': left_time,
+        'left_time_min': left_time_min,
+        'left_time_sec': left_time_sec
     })
 
 def davayHandler(request):
