@@ -186,7 +186,7 @@ input {
     box-shadow: 2px 2px 6px 0 rgb(133 133 133 / 77%);
 }
 
-#prev , #next, #endbtn {
+#prev , #next {
 	display: inline;
     padding: 7px;
     width: auto;
@@ -196,6 +196,19 @@ input {
     font-size: 0.8rem;
     line-height: 1.2rem;
 }
+#endbtn{
+    background-color:#e92c2c;
+    display: inline;
+    padding: 7px;
+    width: auto;
+    color: white;
+    min-width: 90px;
+    margin: 8px 5px 0;
+    font-weight: 600;
+    font-size: 0.8rem;
+    line-height: 1.2rem;
+}
+
 
 .count {
     margin: 0 0 10px 30px;

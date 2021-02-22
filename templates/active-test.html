@@ -31,7 +31,7 @@
 {% csrf_token %}
 
 <div class="nav">
-	{{ current_user.last_name }} {{ current_user.first_name }}
+	Online Test
 </div>
 
 <div class="container">
@@ -39,8 +39,12 @@
 		<div class="time">
 			<h1>{{ current_user.last_name }} {{ current_user.first_name }} {{ current_user.clas.title }}</h1>
 			<h1>Тесты для {{ current_user.clas.title }}a</h1>
+
 			<div class="js-time" id="countdown" data-id="{{ left_time }}">
-				Оставшееся время:  {% if left_time_min < 10  %}0{% endif %}{{ left_time_min }}:{% if left_time_sec < 10  %}0{% endif %}{{ left_time_sec }}
+				Оставшееся время: {{ left_time_min }}:{% if left_time_sec < 10  %}0{% endif %}{{ left_time_sec }}
+			</div>
+			<div class="nav-button">
+				<input type="button" id="endbtn" class="js-end-test input-button " value="Завершить тест">
 			</div>
 			<hr class="hr-2">
 		</div>
@@ -78,7 +82,7 @@
 		<div class="nav-button">
 			<input type="button" id="prev" class="input-button" name="prev-button" value="< Назад">
 			<input type="button" id="next" class="input-button" name="next-button" value="Вперед >">
-			<input type="button" id="endbtn" class="js-end-test input-button " value="Завершить тест"> <!--style="visibility:hidden;"-->
+			 <!--style="visibility:hidden;"-->
 		</div>
 
 		<hr class="hr-2">
