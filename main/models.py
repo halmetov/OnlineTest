@@ -35,21 +35,15 @@ class Test(models.Model):
 class TestItem(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
     question = models.TextField()
-    logo = models.ImageField(upload_to='upload', blank=True)
     answer_1 = models.TextField()
-    logo_1 = models.ImageField(upload_to='upload', blank=True)
     answer_2 = models.TextField()
-    logo_2 = models.ImageField(upload_to='upload', blank=True)
     answer_3 = models.TextField()
-    logo_3 = models.ImageField(upload_to='upload', blank=True)
     answer_4 = models.TextField()
-    logo_4 = models.ImageField(upload_to='upload', blank=True)
     answer_5 = models.TextField()
-    logo_5 = models.ImageField(upload_to='upload', blank=True)
     correct_answer = models.IntegerField()
 
     def __str__(self):
-        return str(self.id)+ ' '+ self.question
+        return str(self.id) + ' ' + self.question
 
 class User(models.Model):
     first_name = models.CharField(max_length=300)
