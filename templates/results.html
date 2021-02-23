@@ -207,22 +207,16 @@ body {
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID ползователя</th>
-                    <th>Имя</th>
-                    <th>Фамилия</th>
+                    <th>Ф.И.О</th>
                     <th>Предмет</th>
-                    <th>Начальная время</th>
                     <th>Набранный балл</th>
                 </tr>
             </thead>
             <tbody>
             {% for tt in tests %}
                 <tr>
-                    <td>{{ tt.user.id }}</td>
-                    <td>{{ tt.user.first_name }}</td>
-                    <td>{{ tt.user.last_name }}</td>
-                    <td>{{ tt.test.title }}</td>
-                    <td>{{ tt.start_date }}</td>
+                    <td>{{ tt.user }}</td>
+                    <td>{{ tt.test.subject.title }}&nbsp;&nbsp; {{ tt.test.title }}</td>
                     <td>{{ tt.ball }}</td>
                 </tr>
             {% endfor %}

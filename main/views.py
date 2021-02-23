@@ -104,8 +104,6 @@ def indexHandler (request):
 
     else:
         if request.POST:
-            print('***' * 100)
-            print(request.POST)
             new_user = User()
             new_user.last_name = request.POST.get('ln', '')
             new_user.first_name = request.POST.get('fn', '')
