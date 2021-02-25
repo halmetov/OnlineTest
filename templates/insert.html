@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+{% if user.is_authenticated %}
+
+<form action="/insert" method="POST">
+    {% csrf_token %}
+    <table border="1">
+        <tr>
+            <th> Поля  </th>
+            <th> Значение </th>
+        </tr>
+        <tr>
+            <td>
+                Название теста
+            </td>
+            <td>
+                <input type="text" name="title">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Описание
+            </td>
+            <td>
+                <input type="text" name="description">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Время на тест(в минутах)
+            </td>
+            <td>
+                <input type="number" name="limit" value="40">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Название предмета
+            </td>
+            <td>
+                <select name="subject_id">
+                    <option value="0"> Выбрать </option>
+                    {% for sub in subjects %}
+                    <option value="{{ sub.id }}">{{ sub.title }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Класс
+            </td>
+            <td>
+                <select name="clas_id">
+                    <option value="0"> Выбрать </option>
+                    {% for sub in classes %}
+                    <option value="{{ sub.id }}">{{ sub.title }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td> Вопросы </td>
+            <td>
+                <textarea name="questions" id="" cols="70" rows="10"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>  </td>
+            <td> <input type="submit"> </td>
+        </tr>
+    </table>
+
+
+
+
+
+</form>
+{% else %}
+Войдите сперва <a href="/admin">Авторизоваться</a>
+
+{% endif %}
+
+</body>
+</html>

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.http import JsonResponse
 from main.models import Test,TestItem, Subject, Class, User, UserTestItem, UserTestItemVariant
-
+import random
 # Create your views here.
 
 def indexHandler (request):
@@ -140,6 +140,66 @@ def davayHandler(request):
     request.session['active_test_id'] = None
 
     return render(request, 'davay.html')
+
+
+def get_random_variants():
+    vs = []
+    while(len(vs)!=5):
+        rn = random.randint(1,5)
+        if rn not in vs:
+            vs.append(rn)
+    return vs
+
+def insertHandler(request):
+    if request.POST:
+        title = request.POST.get('title', '')
+        description = request.POST.get('description', '')
+        limit = int(request.POST.get('limit', 40))
+        subject_id = int(request.POST.get('subject_id', 0))
+        clas_id = int(request.POST.get('clas_id', 0))
+        questions = request.POST.get('questions','')
+        print('*****'*100)
+        if title and subject_id and clas_id and questions:
+            all_questions = questions.split('*')
+            new_test = Test()
+            new_test.title = title
+            new_test.limit = limit
+            new_test.description = description
+            new_test.clas = Class.objects.get(id=int(clas_id))
+            new_test.subject = Subject.objects.get(id=int(subject_id))
+            new_test.start_time = timezone.now()
+            new_test.stop_time = timezone.now() + timedelta(minutes=60*24*365)
+            new_test.save()
+
+            for aq in all_questions:
+                one_question = aq.strip()
+                ques_and_variants = one_question.split('$')
+                if len(ques_and_variants) > 5:
+                    new_test_item = TestItem()
+                    new_test_item.test = new_test
+                    new_test_item.question = ques_and_variants[0].strip()
+                    random_variants = get_random_variants()
+                    new_test_item.correct_answer = random_variants.index(1) + 1
+                    for i in range(5):
+                        j = random_variants[i]
+                        if i == 0:
+                            new_test_item.answer_1 = ques_and_variants[j].strip()
+                        elif i == 1:
+                            new_test_item.answer_2 = ques_and_variants[j].strip()
+                        elif i == 2:
+                            new_test_item.answer_3 = ques_and_variants[j].strip()
+                        elif i == 3:
+                            new_test_item.answer_4 = ques_and_variants[j].strip()
+                        elif i == 4:
+                            new_test_item.answer_5 = ques_and_variants[j].strip()
+
+                    new_test_item.save()
+    else:
+        pass
+    subjects = Subject.objects.all()
+    classes = Class.objects.all()
+    return render(request, 'insert.html', {'subjects': subjects, 'classes': classes})
+
 
 
 def resultsHandler(request):
