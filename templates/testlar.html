@@ -216,23 +216,24 @@ body {
   	<button type="button" class="list-group-item list-group-item-action js-subject" data-id="{{ test.id }}" ><i class="fa fa-book mx-3" style="color: #926dde;"></i>{{ test.title }} &nbsp;&nbsp;&nbsp;&nbsp;   {{ test.subject.title }}</button>
 	{% endfor %}
 </div>
+<footer class="page-footer font-small w-100" style="bottom:0;background:#926dde;">
+	  <div class="container" >
+		  <div class="col-md-12 ">
+			<div class=" text-center py-3 text-white">
+			  <a ><i class="fa fa-facebook-f fa-lg mr-md-5 mr-3"> </i></a>
+			  <a ><i class="fa fa-twitter fa-lg mr-md-5 mr-3"> </i></a>
+			  <a ><i class="fa fa-google-plus fa-lg mr-md-5 mr-3"> </i></a>
+			  <a><i class="fa fa-at fa-lg"> </i></a>
+			</div>
+		  </div>
+	  </div>
+	<div class="footer-copyright text-center py-2 text-white">
+	  <a><i class="fa fa-instagram fa-lg mr-md-2"></i></a><a class="text-white" href="https://www.instagram.com/bahtiyor_holmetov/">Khalmetov Bakhtiyor </a>|<a class="text-white" href="https://www.instagram.com/assilbek__/"> Korganbaev Assilbek</a><a><i class="fa fa-instagram fa-lg ml-md-2 "> </i></a>
+	</div>
+</footer>
 </div>
 
-<footer class="page-footer font-small w-100" style="position:fixed; bottom:0;background:#926dde;">
-  <div class="container" >
-      <div class="col-md-12 ">
-        <div class=" text-center py-3 text-white">
-          <a ><i class="fa fa-facebook-f fa-lg mr-md-5 mr-3"> </i></a>
-          <a ><i class="fa fa-twitter fa-lg mr-md-5 mr-3"> </i></a>
-          <a ><i class="fa fa-google-plus fa-lg mr-md-5 mr-3"> </i></a>
-          <a><i class="fa fa-at fa-lg"> </i></a>
-        </div>
-      </div>
-  </div>
-<div class="footer-copyright text-center py-2 text-white">
-  <a><i class="fa fa-instagram fa-lg mr-md-2"></i></a><a class="text-white" href="https://www.instagram.com/bahtiyor_holmetov/">Kholmetov Bakhtiyor </a>|<a class="text-white" href="https://www.instagram.com/assilbek__/"> Korganbaev Assilbek</a><a><i class="fa fa-instagram fa-lg ml-md-2 "> </i></a>
-</div>
-</footer>
+
 
 <script>
 	$('.js-subject').click(function(){
