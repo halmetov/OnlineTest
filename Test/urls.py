@@ -18,7 +18,7 @@ from django.urls import path
 from django.conf.urls import url
 from django.views.static import serve
 from Test import settings
-from main.views import indexHandler, davayHandler, resultsHandler, insertHandler
+from main.views import indexHandler, davayHandler, resultsHandler, insertHandler, analizeHandler
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,6 +26,7 @@ urlpatterns = [
         'document_root': settings.MEDIA_ROOT
     }),
     path('davay', davayHandler),
+    path('analize/<int:test_id>', analizeHandler),
     path('insert', insertHandler),
     path('results', resultsHandler),
     path('', indexHandler),

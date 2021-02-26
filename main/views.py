@@ -25,8 +25,9 @@ def indexHandler (request):
     left_time_sec = 0
     left_time = 0
     if current_user:
-        tests = Test.objects.all()
         current_user = User.objects.get(id=int(current_user))
+        tests = Test.objects.filter(clas__id=current_user.clas.id)
+
         if active_test_id:
             active_test = UserTestItem.objects.get(id=int(active_test_id))
             left_time = active_test.stop_date - timezone.now()
@@ -151,6 +152,8 @@ def get_random_variants():
     return vs
 
 def insertHandler(request):
+    success_variants_count = 0
+    test_created = False
     if request.POST:
         title = request.POST.get('title', '')
         description = request.POST.get('description', '')
@@ -170,6 +173,7 @@ def insertHandler(request):
             new_test.start_time = timezone.now()
             new_test.stop_time = timezone.now() + timedelta(minutes=60*24*365)
             new_test.save()
+            test_created = True
 
             for aq in all_questions:
                 one_question = aq.strip()
@@ -194,11 +198,12 @@ def insertHandler(request):
                             new_test_item.answer_5 = ques_and_variants[j].strip()
 
                     new_test_item.save()
+                    success_variants_count=success_variants_count+1
     else:
         pass
     subjects = Subject.objects.all()
     classes = Class.objects.all()
-    return render(request, 'insert.html', {'subjects': subjects, 'classes': classes})
+    return render(request, 'insert.html', {'subjects': subjects, 'classes': classes,'success_variants_count':success_variants_count, 'test_created':test_created})
 
 
 
@@ -214,3 +219,26 @@ def resultsHandler(request):
         tests = UserTestItem.objects.all()
 
     return render(request, 'results.html', {'tests': tests})
+
+
+def analizeHandler(request, test_id):
+    test_info = None
+    test_id = test_id
+    test_user_item_variants = []
+    if not request.user.is_authenticated:
+        tests = []
+        current_user = request.session.get('user_id', None)
+        if current_user:
+            current_user = User.objects.get(id=int(current_user))
+            if current_user:
+                test_info = UserTestItem.objects.filter(user__id=int(current_user.id)).filter(id=test_id)
+                if test_info:
+                    test_info[0]
+    else:
+        test_info = UserTestItem.objects.get(id=test_id)
+
+    if test_info:
+        test_user_item_variants = UserTestItemVariant.objects.filter(user_test_item__id = test_id)
+
+
+    return render(request, 'analize.html', {'test_user_item_variants':test_user_item_variants, 'test_info':test_info})

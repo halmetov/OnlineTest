@@ -142,7 +142,7 @@
 
 	function changeHandler(event) {
 	   var csrfmiddlewaretoken = $('[name="csrfmiddlewaretoken"]').val();
-        var test_question_id = {{ test_question.id }};
+        var test_question_id = {% if test_question %}{{ test_question.id }}{%else%}0{% endif %};
         var oData = {
           'test_question_id': test_question_id,
           'action': 'choose_variant',

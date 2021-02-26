@@ -207,9 +207,10 @@ body {
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Ф.И.О</th>
+                    <th>ФИО</th>
                     <th>Предмет</th>
                     <th>Набранный балл</th>
+                    <th>Подробно</th>
                 </tr>
             </thead>
             <tbody>
@@ -218,6 +219,7 @@ body {
                     <td>{{ tt.user }}</td>
                     <td>{{ tt.test.subject.title }}&nbsp;&nbsp; {{ tt.test.title }}</td>
                     <td>{{ tt.ball }}</td>
+                    <td><a style="color:#926dde;" href="/analize/{{ tt.id }}"> Открыть </a> </td>
                 </tr>
             {% endfor %}
             </tbody>

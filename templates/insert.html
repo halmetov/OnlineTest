@@ -219,6 +219,12 @@ body {
               </tr>
             </thead>
             <tbody>
+            {% if test_created %}
+                <tr>
+                    <td> Тест создан успешно </td>
+                    <td> Количество вопросов {{ success_variants_count }} </td>
+                </tr>
+            {% endif %}
               <tr>
                 <td>Названия теста</td>
                 <td>
