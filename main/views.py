@@ -21,6 +21,7 @@ def indexHandler (request):
     active_test_questions = []
     classs = []
     active_test = None
+    tests = []
     left_time_min = 0
     left_time_sec = 0
     left_time = 0
@@ -111,6 +112,7 @@ def indexHandler (request):
             clas_id = int(request.POST.get('class', 0))
             if clas_id:
                 new_user.clas = Class.objects.get(id=int(clas_id))
+                tests = Test.objects.filter(clas__id=int(clas_id))
             old_user = User.objects.filter(last_name=new_user.last_name).filter(first_name=new_user.first_name).filter(clas__id=int(clas_id))
             if old_user:
                 new_user = old_user[0]
@@ -119,7 +121,8 @@ def indexHandler (request):
             request.session['user_id'] = new_user.id
             current_user = User.objects.get(id=int(new_user.id))
 
-        tests = Test.objects.all()
+
+
         classs = Class.objects.all()
 
     return render(request, 'index.html', {
@@ -233,7 +236,7 @@ def analizeHandler(request, test_id):
             if current_user:
                 test_info = UserTestItem.objects.filter(user__id=int(current_user.id)).filter(id=test_id)
                 if test_info:
-                    test_info[0]
+                    test_info = test_info[0]
     else:
         test_info = UserTestItem.objects.get(id=test_id)
 
