@@ -208,10 +208,19 @@ body {
 <div class="container rounded mt-3 " style="padding-bottom:100px;">
 	<div class="container rounded mt-3 mb-3 bg-white">
 	  <div class="row justify-content-center">
-	    <h2 class="text-italic">{{ current_user.last_name }} {{ current_user.first_name }} {{ current_user.clas.title }}</h2>
+	    <h2 class="text-italic pt-2 pb-1">{{ current_user.last_name }} {{ current_user.first_name }} {{ current_user.clas.title }}</h2>
 	  </div>
 	</div>
 <div class="list-group">
+	<div class="form-group">
+    <label for="subjects" style="padding-top:10px;">Предмет</label>
+        <select class="form-control js-filter" name="subject_id" id="subjects">
+            <option value="0"> Все </option>
+            {% for cl in subjects %}
+            <option value="{{ cl.id }}"  {% if cl.id == subject_id %} selected="selected" {% endif %}> {{ cl.title }} </option>
+            {% endfor %}
+        </select>
+  </div>
 	{% for test in tests %}
   	<button type="button" class="list-group-item list-group-item-action js-subject" data-id="{{ test.id }}" ><i class="fa fa-book mx-3" style="color: #926dde;"></i>{{ test.title }} &nbsp;&nbsp;&nbsp;&nbsp;   {{ test.subject.title }}</button>
 	{% endfor %}
@@ -261,6 +270,21 @@ body {
 
         return false;
 	})
+</script>
+<script>
+
+    $('.js-filter').change(function(){
+        var path = '';
+
+        $('.js-filter').each(function(a,b){
+            path += '&' + $(b).attr('name') +'=' + $(b).val();
+        })
+
+        location.search = '?qweqwe=qweqwe' + path;
+
+        return false;
+    })
+
 </script>
 </body>
 </html>

@@ -29,5 +29,6 @@ urlpatterns = [
     path('analize/<int:test_id>', analizeHandler),
     path('insert', insertHandler),
     path('results', resultsHandler),
+    path('results/print', resultsHandler),
     path('', indexHandler),
 ]

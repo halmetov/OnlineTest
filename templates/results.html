@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>result</title>
+<title>Результаты</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -203,13 +203,125 @@ body {
   </div>
 </nav>
 <div class="container rounded mt-4 bg-white" style="padding-bottom:100px;" > <!--style="background-color:#d5d5d524;"-->
-    <div class="bs-example">
-        <table class="table table-striped " >
-            <thead>
+    <div class="bs-example row">
+
+        <div class="form-group col-sm-4">
+            <label for="classes" class="control-label  pl-4" style="padding-top:10px;">Класс</label><br>
+            <div class="pl-3">
+                <select class="form-control js-filter  " name="class_id" id="classes">
+                    <option value="0"> Все </option>
+                    {% for cl in classes %}
+                    <option value="{{ cl.id }}" {% if cl.id == class_id %} selected="selected" {% endif %}> {{ cl.title }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group col-sm-4">
+            <label for="classes" class="control-label pl-4" style="padding-top:10px;">Предмет</label><br>
+            <div class="pl-3">
+                <select class="form-control js-filter  "  name="subject_id" id="subjects">
+                    <option value="0"> Все </option>
+                    {% for cl in subjects %}
+                    <option value="{{ cl.id }}"  {% if cl.id == subject_id %} selected="selected" {% endif %}> {{ cl.title }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+
+        <div class="form-group col-sm-4">
+            {% if class_id or subject_id %}
+            <label for="classes" class="control-label  pl-4" style="padding-top:10px;">Тест</label><br>
+            <div class="pl-3">
+                <select class="form-control js-filter" name="test_list_id" id="testlist">
+                    <option value="0"> Все </option>
+                    {% for cl in test_list %}
+                    <option value="{{ cl.id }}"  {% if cl.id == test_list_id %} selected="selected" {% endif %}> {{ cl.subject.title }} - {{ cl.title }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+             {% endif %}
+        </div>
+
+
+        <div class="form-group col-sm-4">
+            <label class="control-label  pl-4" style="padding-top:10px;">Сортировать по</label><br>
+            <div class="pl-3">
+                <select class="form-control js-filter  "name="sort_key" >
+                    <option value="date"> Дате </option>
+                    <option value="last_name"  {% if sort_key == 'last_name' %} selected="selected" {% endif %} > ФИО </option>
+                    <option value="ball"  {% if sort_key == 'ball' %} selected="selected" {% endif %} > Баллу </option>
+                    <option value="subject"  {% if sort_key == 'subject' %} selected="selected" {% endif %} > Предмету </option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="form-group col-sm-4">
+            <label class="control-label  pl-4" style="padding-top:10px;">Сортировать по</label><br>
+            <div class="pl-3">
+                <select class="form-control js-filter  "name="sort_key" >
+                    <option value="date"> Дате </option>
+                    <option value="last_name"  {% if sort_key == 'last_name' %} selected="selected" {% endif %} > ФИО </option>
+                    <option value="ball"  {% if sort_key == 'ball' %} selected="selected" {% endif %} > Баллу </option>
+                    <option value="subject"  {% if sort_key == 'subject' %} selected="selected" {% endif %} > Предмету </option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="form-group col-sm-4">
+            <label class="control-label pl-4" style="padding-top:10px;">Количество</label><br>
+            <div class="pl-3">
+                <select class="form-control js-filter"  name="limit" >
+                    <option value="10"{% if limit == 10 %} selected="selected" {% endif %}>10</option>
+                    <option value="20"{% if limit == 20 %} selected="selected" {% endif %}>20</option>
+                    <option value="50"{% if limit == 50 %} selected="selected" {% endif %}>50</option>
+                    <option value="100"{% if limit == 100 %} selected="selected" {% endif %}>100</option>
+                    <option value="200"{% if limit == 200 %} selected="selected" {% endif %}>200</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="col-sm-12 pb-3" style="padding-left:30px;">
+            <label >
+               <a href="/results"><button type="button" class="btn btn-danger"> Сброс фильтра </button></a>
+               <a target="_blank" href="/results/print?action=print&class_id={{ class_id }}&subject_id={{ subject_id }}&test_list_id={{ test_list_id }}&sort_dr={{ sort_dr }}&sort_key={{ sort_key }}"><button type="button" class="btn btn-primary"> Печать </button>  </a>
+            </label>
+        </div>
+
+        <div  style="width:100%; overflow:auto;">
+            {% if page_count > 1 %}
+            <nav aria-label="Page navigation example ">
+
+                  <ul class="pagination justify-content-end pr-2">
+                    {% if current_page != 1 %}
+                        <li class="page-item ">
+                          <a class="page-link" href="/results?class_id={{ class_id }}&subject_id={{ subject_id }}&test_list_id={{ test_list_id }}&sort_dr={{ sort_dr }}&sort_key={{ sort_key }}&page={{ prev_page }}&limit={{ limit }}" tabindex="-1">Назад</a>
+                        </li>
+                      {% endif %}
+
+                      {% for p in page_range %}
+                        <li class="page-item {% if p == current_page %} active {% endif %}"><a class="page-link " href="/results?class_id={{ class_id }}&subject_id={{ subject_id }}&test_list_id={{ test_list_id }}&sort_dr={{ sort_dr }}&sort_key={{ sort_key }}&page={{ p }}&limit={{ limit }}">{{ p }}</a></li>
+                      {% endfor %}
+
+                    {% if current_page < page_count %}
+                        <li class="page-item">
+                          <a class="page-link" href="/results?class_id={{ class_id }}&subject_id={{ subject_id }}&test_list_id={{ test_list_id }}&sort_dr={{ sort_dr }}&sort_key={{ sort_key }}&page={{ next_page }}&limit={{ limit }}">Вперёд</a>
+                        </li>
+                    {% endif %}
+
+                  </ul>
+            </nav>
+            {% endif %}
+        <table class="table table-striped " id="PRINTTABLE">
+            <thead >
                 <tr>
-                    <th>ФИО</th>
+                    <th >ФИО</th>
                     <th>Предмет</th>
-                    <th>Набранный балл</th>
+                    <th>Бал</th>
                     <th>Подробно</th>
                 </tr>
             </thead>
@@ -219,13 +331,37 @@ body {
                     <td>{{ tt.user }}</td>
                     <td>{{ tt.test.subject.title }}&nbsp;&nbsp; {{ tt.test.title }}</td>
                     <td>{{ tt.ball }}</td>
-                    <td><a style="color:#926dde;" href="/analize/{{ tt.id }}"> Открыть </a> </td>
+                    <td><a class=" btn btn-success" href="/analize/{{ tt.id }}"> Открыть </a> </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+        </div>
         <hr class="hr-2">
     </div>
+    {% if page_count > 1 %}
+            <nav aria-label="Page navigation example ">
+
+                  <ul class="pagination justify-content-end pr-2">
+                    {% if current_page != 1 %}
+                        <li class="page-item ">
+                          <a class="page-link" href="/results?class_id={{ class_id }}&subject_id={{ subject_id }}&test_list_id={{ test_list_id }}&sort_dr={{ sort_dr }}&sort_key={{ sort_key }}&page={{ prev_page }}&limit={{ limit }}" tabindex="-1">Назад</a>
+                        </li>
+                      {% endif %}
+
+                      {% for p in page_range %}
+                        <li class="page-item {% if p == current_page %} active {% endif %}"><a class="page-link " href="/results?class_id={{ class_id }}&subject_id={{ subject_id }}&test_list_id={{ test_list_id }}&sort_dr={{ sort_dr }}&sort_key={{ sort_key }}&page={{ p }}&limit={{ limit }}">{{ p }}</a></li>
+                      {% endfor %}
+
+                    {% if current_page < page_count %}
+                        <li class="page-item">
+                          <a class="page-link" href="/results?class_id={{ class_id }}&subject_id={{ subject_id }}&test_list_id={{ test_list_id }}&sort_dr={{ sort_dr }}&sort_key={{ sort_key }}&page={{ next_page }}&limit={{ limit }}">Вперёд</a>
+                        </li>
+                    {% endif %}
+
+                  </ul>
+            </nav>
+            {% endif %}
 </div>
 
 
@@ -241,8 +377,25 @@ body {
       </div>
   </div>
 <div class="footer-copyright text-center py-2 text-white">
-  <a><i class="fa fa-instagram fa-lg mr-md-2 sm-6"></i></a><a class="text-white" href="https://www.instagram.com/bahtiyor_holmetov/">Khalmetov Bakhtiyor </a>|<a class="text-white" href="https://www.instagram.com/assilbek__/"> Korganbaev Assilbek</a><a><i class="fa fa-instagram fa-lg ml-md-2 "> </i></a>
+    <a><i class="fa fa-instagram fa-lg mr-md-2 sm-6"></i></a><a class="text-white" href="https://www.instagram.com/bahtiyor_holmetov/">Халметов Бахтиёр </a> &nbsp;|&nbsp;<a class="text-white" href="https://www.instagram.com/assilbek__/"> Мусаматов Нодир </a>  &nbsp;|&nbsp; <a class="text-white" href="https://www.instagram.com/assilbek__/"> Корганбаев Асилбек </a>  | <a><i class="fa fa-instagram fa-lg ml-md-2 "> </i></a>
 </div>
 </footer>
+
+<script>
+
+    $('.js-filter').change(function(){
+        var path = '';
+
+        $('.js-filter').each(function(a,b){
+            path += '&' + $(b).attr('name') +'=' + $(b).val();
+        })
+
+        location.search = '?qweqwe=qweqwe' + path;
+
+        return false;
+    })
+
+</script>
+
 </body>
 </html>

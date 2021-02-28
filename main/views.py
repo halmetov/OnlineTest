@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.http import JsonResponse
 from main.models import Test,TestItem, Subject, Class, User, UserTestItem, UserTestItemVariant
 import random
+import math
 # Create your views here.
 
 def indexHandler (request):
@@ -17,17 +18,22 @@ def indexHandler (request):
     test_question_id = request.session.get('test_question_id',None)
     test_question = None
     choosen_variant_info = None
+    all_user_choosen_variants = []
     endtest = None
     active_test_questions = []
     classs = []
     active_test = None
     tests = []
+    subject_id = int(request.GET.get('subject_id', 0))
+    subjects = Subject.objects.all()
     left_time_min = 0
     left_time_sec = 0
     left_time = 0
     if current_user:
         current_user = User.objects.get(id=int(current_user))
         tests = Test.objects.filter(clas__id=current_user.clas.id)
+        if subject_id:
+            tests = Test.objects.filter(clas__id=current_user.clas.id).filter(subject__id=subject_id)
 
         if active_test_id:
             active_test = UserTestItem.objects.get(id=int(active_test_id))
@@ -47,6 +53,10 @@ def indexHandler (request):
                 test_question_id = test_question.id
             if test_question_id:
                 utvs = UserTestItemVariant.objects.filter(user_test_item__id=active_test.id).filter(test_item__id=test_question.id)
+                all_user_choosen_variants = []
+                utvs2 = UserTestItemVariant.objects.filter(user_test_item__id=active_test.id)
+                for utv in utvs2:
+                    all_user_choosen_variants.append(int(utv.test_item.id))
                 if utvs:
                     choosen_variant_info = utvs[0]
 
@@ -113,13 +123,15 @@ def indexHandler (request):
             if clas_id:
                 new_user.clas = Class.objects.get(id=int(clas_id))
                 tests = Test.objects.filter(clas__id=int(clas_id))
-            old_user = User.objects.filter(last_name=new_user.last_name).filter(first_name=new_user.first_name).filter(clas__id=int(clas_id))
-            if old_user:
-                new_user = old_user[0]
+                old_user = User.objects.filter(last_name=new_user.last_name).filter(first_name=new_user.first_name).filter(clas__id=int(clas_id))
+                if old_user:
+                    new_user = old_user[0]
+                else:
+                    new_user.save()
+                request.session['user_id'] = new_user.id
+                current_user = User.objects.get(id=int(new_user.id))
             else:
-                new_user.save()
-            request.session['user_id'] = new_user.id
-            current_user = User.objects.get(id=int(new_user.id))
+                current_user= None
 
 
 
@@ -135,8 +147,11 @@ def indexHandler (request):
         'choosen_variant_info': choosen_variant_info,
         'endtest': endtest,
         'left_time': left_time,
+        'all_user_choosen_variants':all_user_choosen_variants,
         'left_time_min': left_time_min,
-        'left_time_sec': left_time_sec
+        'left_time_sec': left_time_sec,
+        'subjects': subjects,
+        'subject_id': subject_id,
     })
 
 def davayHandler(request):
@@ -211,17 +226,137 @@ def insertHandler(request):
 
 
 def resultsHandler(request):
+    action = request.GET.get('action', '')
+    sort_dr = request.GET.get('sort_dr', 'desc')
+    sort_key = request.GET.get('sort_key', 'id')
+    class_id = int(request.GET.get('class_id', 0))
+    subject_id = int(request.GET.get('subject_id', 0))
+    test_list_id = int(request.GET.get('test_list_id', 0))
+    total = 0
+
+    orderby_values = {
+        'date': 'id',
+        'last_name': 'user__last_name',
+        'ball': 'ball',
+        'subject': 'test__subject__title'
+    }
+    orderby_value = orderby_values.get(sort_key, 'id')
+    if sort_dr == 'desc':
+        orderby_value = '-' + orderby_value
+
+    limit = int(request.GET.get('limit', 20))
+    current_page = int(request.GET.get('page', 1))
+    stop = current_page * limit
+    start = stop - limit
+
+    classes = []
+    subjects = []
+    test_list = []
+
     if not request.user.is_authenticated:
         tests = []
         current_user = request.session.get('user_id', None)
         if current_user:
             current_user = User.objects.get(id=int(current_user))
             if current_user:
-                tests = UserTestItem.objects.filter(user__id=int(current_user.id))
-    else:
-        tests = UserTestItem.objects.all()
+                classes = Class.objects.filter(id=current_user.clas.id)
+                all_tests = UserTestItem.objects.filter(user__id=int(current_user.id))
+                user_subjects = []
+                user_tests_list = []
+                for at in all_tests:
+                    if at.test.subject.id not in user_subjects:
+                        user_subjects.append(at.test.subject.id)
+                    if at.test.id not in user_tests_list:
+                        if subject_id:
+                            if at.test.subject.id == subject_id:
+                                user_tests_list.append(at.test.id)
+                        else:
+                            user_tests_list.append(at.test.id)
 
-    return render(request, 'results.html', {'tests': tests})
+                if user_subjects:
+                    subjects = Subject.objects.filter(id__in=user_subjects)
+                if user_tests_list:
+                    test_list = Test.objects.filter(id__in=user_tests_list)
+
+                tests = []
+                if test_list_id:
+                    tests = UserTestItem.objects.filter(user__id=int(current_user.id)).filter(test__id=test_list_id).order_by(orderby_value)[start:stop]
+                    total = UserTestItem.objects.filter(user__id=int(current_user.id)).filter(test__id=test_list_id).order_by(orderby_value).count()
+                else:
+                    if subject_id:
+                        tests = UserTestItem.objects.filter(user__id=int(current_user.id)).filter(test__subject__id=subject_id).order_by(orderby_value)[start:stop]
+                        total = UserTestItem.objects.filter(user__id=int(current_user.id)).filter(test__subject__id=subject_id).order_by(orderby_value).count()
+                    else:
+                        tests = UserTestItem.objects.filter(user__id=int(current_user.id)).order_by(orderby_value)[start:stop]
+                        total = UserTestItem.objects.filter(user__id=int(current_user.id)).order_by(orderby_value).count()
+
+    else:
+        classes = Class.objects.all()
+        subjects = Subject.objects.all()
+        test_list = []
+        if not class_id and not subject_id:
+            test_list = Test.objects.all()
+        else:
+            if class_id:
+                test_list = Test.objects.filter(clas__id=class_id)
+                if subject_id:
+                    test_list = Test.objects.filter(clas__id=class_id).filter(subject__id=subject_id)
+            else:
+                if subject_id:
+                    test_list = Test.objects.filter(subject__id=subject_id)
+
+        tests = []
+        if not class_id and not subject_id and not test_list_id:
+            tests = UserTestItem.objects.all().order_by(orderby_value).order_by(orderby_value)[start:stop]
+            total = UserTestItem.objects.all().order_by(orderby_value).order_by(orderby_value).count()
+        else:
+            if test_list_id:
+                tests = UserTestItem.objects.filter(test__id=test_list_id).order_by(orderby_value)[start:stop]
+                total = UserTestItem.objects.filter(test__id=test_list_id).order_by(orderby_value).count()
+            else:
+                if class_id:
+                    tests = UserTestItem.objects.filter(test__clas__id = class_id).order_by(orderby_value)[start:stop]
+                    total = UserTestItem.objects.filter(test__clas__id = class_id).order_by(orderby_value).count()
+                    if subject_id:
+                        tests = UserTestItem.objects.filter(test__clas__id = class_id).filter(test__subject__id = subject_id).order_by(orderby_value)[start:stop]
+                        total = UserTestItem.objects.filter(test__clas__id = class_id).filter(test__subject__id = subject_id).order_by(orderby_value).count()
+                else:
+                    if subject_id:
+                        tests = UserTestItem.objects.filter(test__subject__id=subject_id).order_by(orderby_value)[start:stop]
+                        total = UserTestItem.objects.filter(test__subject__id=subject_id).order_by(orderby_value).count()
+
+
+    prev_page = current_page - 1
+    next_page = 0
+    if total > stop:
+        next_page = current_page + 1
+    page_count = math.ceil(total / limit)
+    page_range = range(1, page_count + 1)
+
+
+    oData = {
+        'current_page': current_page,
+        'prev_page': prev_page,
+        'next_page': next_page,
+        'total': total,
+        'limit': limit,
+        'page_range': page_range,
+        'page_count': page_count
+    }
+    oData['tests'] = tests
+    oData['subjects'] = subjects
+    oData['classes'] = classes
+    oData['test_list'] = test_list
+    oData['class_id'] = class_id
+    oData['subject_id'] = subject_id
+    oData['test_list_id'] = test_list_id
+    oData['sort_dr'] = sort_dr
+    oData['sort_key'] = sort_key
+
+    if action == 'print':
+        return render(request, 'results-print.html', oData)
+    else:
+        return render(request, 'results.html', oData)
 
 
 def analizeHandler(request, test_id):

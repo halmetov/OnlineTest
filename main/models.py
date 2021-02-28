@@ -64,7 +64,7 @@ class UserTestItem(models.Model):
     stop_date = models.DateTimeField()
     ball = models.IntegerField(default=0)
     count_question = models.IntegerField(default=0)
-    true_question = models.ImageField(default=0)
+    true_question = models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.user.last_name} {self.user.first_name}  {self.test.title} {self.id}'

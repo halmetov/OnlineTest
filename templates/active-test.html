@@ -29,10 +29,9 @@
 </head>
 <body>
 {% csrf_token %}
-
-<div class="nav">
-	Online Test
-</div>
+	<div class="nav"style="text-align:center; font-family:forte; font-size:30px;" >
+		Online Test
+	</div>
 
 <div class="container">
 	<div class="left-container"><br>
@@ -54,7 +53,7 @@
 		<hr class="hr-2">
 		<div class="nav-numbers">
 			{% for atq in active_test_questions %}
-			<div class="nav-number js-question-item {% if atq.id == test_question.id %} active {% endif %}" data-loop="{{ forloop.counter }}" data-id="{{ atq.id }}"> {{ forloop.counter }} </div>
+			<div class=" nav-number js-question-item {% if atq.id == test_question.id %} active {% endif %} {% if atq.id in all_user_choosen_variants %} js-choosed {% endif %}" data-loop="{{ forloop.counter }}" data-id="{{ atq.id }}"> {{ atq.user_variant }} {{ forloop.counter }} </div>
 			{% endfor %}
 
 		</div>
@@ -189,6 +188,9 @@
 	.js-question-item.active{
 		background-color:#d2c7f3;
 		border: 1px solid #a88dd3;
+	}
+	.js-choosed{
+		border: 1px solid red !important;
 	}
 
 </style>
