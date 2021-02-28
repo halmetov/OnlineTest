@@ -261,11 +261,10 @@ body {
         <div class="form-group col-sm-4">
             <label class="control-label  pl-4" style="padding-top:10px;">Сортировать по</label><br>
             <div class="pl-3">
-                <select class="form-control js-filter  "name="sort_key" >
-                    <option value="date"> Дате </option>
-                    <option value="last_name"  {% if sort_key == 'last_name' %} selected="selected" {% endif %} > ФИО </option>
-                    <option value="ball"  {% if sort_key == 'ball' %} selected="selected" {% endif %} > Баллу </option>
-                    <option value="subject"  {% if sort_key == 'subject' %} selected="selected" {% endif %} > Предмету </option>
+                <select class="form-control js-filter  "name="sort_dr" >
+                    <option value="desc"> Убыванию </option>
+                    <option value="asc"{% if sort_dr == 'asc' %} selected="selected" {% endif %}> Возрастанию </option>
+
                 </select>
             </div>
 
@@ -288,7 +287,9 @@ body {
         <div class="col-sm-12 pb-3" style="padding-left:30px;">
             <label >
                <a href="/results"><button type="button" class="btn btn-danger"> Сброс фильтра </button></a>
-               <a target="_blank" href="/results/print?action=print&class_id={{ class_id }}&subject_id={{ subject_id }}&test_list_id={{ test_list_id }}&sort_dr={{ sort_dr }}&sort_key={{ sort_key }}"><button type="button" class="btn btn-primary"> Печать </button>  </a>
+                {% if user.is_authenticated %}
+                    <a target="_blank" href="/results/print?action=print&class_id={{ class_id }}&subject_id={{ subject_id }}&test_list_id={{ test_list_id }}&sort_dr={{ sort_dr }}&sort_key={{ sort_key }}"><button type="button" class="btn btn-primary"> Печать </button>  </a>
+                {% endif %}
             </label>
         </div>
 
@@ -377,7 +378,7 @@ body {
       </div>
   </div>
 <div class="footer-copyright text-center py-2 text-white">
-    <a><i class="fa fa-instagram fa-lg mr-md-2 sm-6"></i></a><a class="text-white" href="https://www.instagram.com/bahtiyor_holmetov/">Халметов Бахтиёр </a> &nbsp;|&nbsp;<a class="text-white" href="https://www.instagram.com/assilbek__/"> Мусаматов Нодир </a>  &nbsp;|&nbsp; <a class="text-white" href="https://www.instagram.com/assilbek__/"> Корганбаев Асилбек </a>  | <a><i class="fa fa-instagram fa-lg ml-md-2 "> </i></a>
+    <a><i class="fa fa-instagram fa-lg mr-md-2 sm-6"></i></a><a target="_blank" class="text-white" href="https://www.instagram.com/bahtiyor_holmetov/">Халметов Бахтиёр </a> &nbsp;|&nbsp;<a target="_blank" class="text-white" href="https://www.instagram.com/nodir.musamatov/"> Мусаматов Нодир </a>  &nbsp;|&nbsp; <a target="_blank" class="text-white" href="https://www.instagram.com/assilbek__/"> Корганбаев Асилбек </a>  | <a><i class="fa fa-instagram fa-lg ml-md-2 "> </i></a>
 </div>
 </footer>
 
