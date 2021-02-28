@@ -99,11 +99,7 @@ a{
 .nav-numbers {
 	text-align: center;
     margin-top: 8px;
-    overflow-x: auto;
-    scrollbar-width: thin;
-    scroll-behavior: smooth;
-    width: 100%;
-    white-space: nowrap;
+    width: 75%;
     position: relative;
 }
 
