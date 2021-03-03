@@ -250,15 +250,15 @@ def insertHandler(request):
                     for i in range(5):
                         j = random_variants[i]
                         if i == 0:
-                            new_test_item.answer_1 = ques_and_variants[j].strip()
+                            new_test_item.answer_1 = ques_and_variants[j].strip().replace('\n','<br>')
                         elif i == 1:
-                            new_test_item.answer_2 = ques_and_variants[j].strip()
+                            new_test_item.answer_2 = ques_and_variants[j].strip().replace('\n','<br>')
                         elif i == 2:
-                            new_test_item.answer_3 = ques_and_variants[j].strip()
+                            new_test_item.answer_3 = ques_and_variants[j].strip().replace('\n','<br>')
                         elif i == 3:
-                            new_test_item.answer_4 = ques_and_variants[j].strip()
+                            new_test_item.answer_4 = ques_and_variants[j].strip().replace('\n','<br>')
                         elif i == 4:
-                            new_test_item.answer_5 = ques_and_variants[j].strip()
+                            new_test_item.answer_5 = ques_and_variants[j].strip().replace('\n','<br>')
 
                     new_test_item.save()
                     success_variants_count=success_variants_count+1
