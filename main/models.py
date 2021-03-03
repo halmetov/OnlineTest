@@ -65,6 +65,7 @@ class UserTestItem(models.Model):
     ball = models.IntegerField(default=0)
     count_question = models.IntegerField(default=0)
     true_question = models.IntegerField(default=0)
+    questions = models.CharField(max_length=300, default='', blank=True)
 
     def __str__(self):
         return f'{self.user.last_name} {self.user.first_name}  {self.test.title} {self.id}'
