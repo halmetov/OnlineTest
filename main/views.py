@@ -7,6 +7,26 @@ import random
 import math
 # Create your views here.
 
+def get_random_variants():
+    vs = []
+    while(len(vs)!=5):
+        rn = random.randint(1,5)
+        if rn not in vs:
+            vs.append(rn)
+    return vs
+
+
+def get_random_question_variants(arr):
+    vs = []
+    while(len(vs)!=len(arr)):
+        rn = random.randint(0, len(arr)-1)
+        if rn not in vs:
+            vs.append(rn)
+    res = []
+    for i in range(len(arr)):
+        res.append(str(arr[vs[i]]))
+    return res
+
 def indexHandler (request):
     current_user = request.session.get('user_id', None)
     if request.session.get('endtest', 0):
@@ -20,6 +40,7 @@ def indexHandler (request):
     choosen_variant_info = None
     all_user_choosen_variants = []
     endtest = None
+    random_variants = get_random_variants()
     active_test_questions = []
     classs = []
     active_test = None
@@ -37,28 +58,48 @@ def indexHandler (request):
 
         if active_test_id:
             active_test = UserTestItem.objects.get(id=int(active_test_id))
+            ac_questions = active_test.questions and active_test.questions.split(',') or []
             left_time = active_test.stop_date - timezone.now()
             left_time = int(left_time.total_seconds())
             if left_time < 0:
                 left_time = 0
             left_time_min = int(left_time/60)
             left_time_sec = int(left_time%60)
-            active_test_questions = TestItem.objects.filter(test__id=int(active_test.test.id))
-
-            if test_question_id:
-                test_question_id = int(test_question_id)
-                test_question = TestItem.objects.get(id=test_question_id)
-            elif active_test_questions:
-                test_question = active_test_questions[0]
-                test_question_id = test_question.id
-            if test_question_id:
-                utvs = UserTestItemVariant.objects.filter(user_test_item__id=active_test.id).filter(test_item__id=test_question.id)
-                all_user_choosen_variants = []
-                utvs2 = UserTestItemVariant.objects.filter(user_test_item__id=active_test.id)
-                for utv in utvs2:
-                    all_user_choosen_variants.append(int(utv.test_item.id))
-                if utvs:
-                    choosen_variant_info = utvs[0]
+            active_test_questions = []
+            if ac_questions:
+                for i in range(len(ac_questions)):
+                    new_ac_question = TestItem.objects.get(id=int(ac_questions[i]))
+                    active_test_questions.append(new_ac_question)
+                if test_question_id:
+                    test_question_id = int(test_question_id)
+                    test_question = TestItem.objects.get(id=test_question_id)
+                elif active_test_questions:
+                    test_question = TestItem.objects.get(id=int(ac_questions[0]))
+                    test_question_id = test_question.id
+                if test_question_id:
+                    utvs = UserTestItemVariant.objects.filter(user_test_item__id=active_test.id).filter(test_item__id=test_question.id)
+                    all_user_choosen_variants = []
+                    utvs2 = UserTestItemVariant.objects.filter(user_test_item__id=active_test.id)
+                    for utv in utvs2:
+                        all_user_choosen_variants.append(int(utv.test_item.id))
+                    if utvs:
+                        choosen_variant_info = utvs[0]
+            else:
+                active_test_questions = TestItem.objects.filter(test__id=int(active_test.test.id))
+                if test_question_id:
+                    test_question_id = int(test_question_id)
+                    test_question = TestItem.objects.get(id=test_question_id)
+                elif active_test_questions:
+                    test_question = active_test_questions[0]
+                    test_question_id = test_question.id
+                if test_question_id:
+                    utvs = UserTestItemVariant.objects.filter(user_test_item__id=active_test.id).filter(test_item__id=test_question.id)
+                    all_user_choosen_variants = []
+                    utvs2 = UserTestItemVariant.objects.filter(user_test_item__id=active_test.id)
+                    for utv in utvs2:
+                        all_user_choosen_variants.append(int(utv.test_item.id))
+                    if utvs:
+                        choosen_variant_info = utvs[0]
 
 
 
@@ -67,12 +108,21 @@ def indexHandler (request):
             if action == 'start_test':
                 test_id = int(request.POST.get('test_id', 0))
                 if test_id:
+                    test_questions = TestItem.objects.filter(test__id=int(test_id))
+                    tqv = []
+                    for tq in test_questions:
+                        tqv.append(tq.id)
+                    new_res = get_random_question_variants(tqv)
+                    new_res2 = ","
+                    new_res = new_res2.join(new_res)
+
                     choosen_test = Test.objects.get(id=test_id)
                     new_user_test = UserTestItem()
                     new_user_test.start_date = timezone.now()
                     new_user_test.stop_date = timezone.now()+timedelta(minutes=choosen_test.limit)
                     new_user_test.test = choosen_test
                     new_user_test.user = current_user
+                    new_user_test.questions = new_res
                     new_user_test.save()
                     request.session['active_test_id'] = new_user_test.id
                     active_test = new_user_test
@@ -142,8 +192,9 @@ def indexHandler (request):
         'classs': classs,
         'current_user': current_user,
         'active_test': active_test,
+        'random_variants': random_variants,
         'active_test_questions':active_test_questions,
-        'test_question':test_question,
+        'test_question': test_question,
         'choosen_variant_info': choosen_variant_info,
         'endtest': endtest,
         'left_time': left_time,
@@ -161,13 +212,7 @@ def davayHandler(request):
     return render(request, 'davay.html')
 
 
-def get_random_variants():
-    vs = []
-    while(len(vs)!=5):
-        rn = random.randint(1,5)
-        if rn not in vs:
-            vs.append(rn)
-    return vs
+
 
 def insertHandler(request):
     success_variants_count = 0
@@ -181,7 +226,7 @@ def insertHandler(request):
         questions = request.POST.get('questions','')
         print('*****'*100)
         if title and subject_id and clas_id and questions:
-            all_questions = questions.split('*')
+            all_questions = questions.split('***')
             new_test = Test()
             new_test.title = title
             new_test.limit = limit

@@ -323,7 +323,10 @@ body {
                     <th >ФИО</th>
                     <th>Предмет</th>
                     <th>Бал</th>
-                    <th>Подробно</th>
+                    {% if user.is_authenticated %}
+                        <th>Подробно</th>
+                    {% endif %}
+                    <!--<th>Подробно</th>-->
                 </tr>
             </thead>
             <tbody>
@@ -332,7 +335,10 @@ body {
                     <td>{{ tt.user }}</td>
                     <td>{{ tt.test.subject.title }}&nbsp;&nbsp; {{ tt.test.title }}</td>
                     <td>{{ tt.ball }}</td>
-                    <td><a class=" btn btn-success" href="/analize/{{ tt.id }}"> Открыть </a> </td>
+                    {% if user.is_authenticated %}
+                        <td><a class=" btn btn-success" href="/analize/{{ tt.id }}"> Открыть </a> </td>
+                    {% endif %}
+                    <!--<td><a class=" btn btn-success" href="/analize/{{ tt.id }}"> Открыть </a> </td>-->
                 </tr>
             {% endfor %}
             </tbody>
