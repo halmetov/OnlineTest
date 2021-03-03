@@ -244,7 +244,7 @@ def insertHandler(request):
                 if len(ques_and_variants) > 5:
                     new_test_item = TestItem()
                     new_test_item.test = new_test
-                    new_test_item.question = ques_and_variants[0].strip()
+                    new_test_item.question = ques_and_variants[0].strip().replace('\n','<br>')
                     random_variants = get_random_variants()
                     new_test_item.correct_answer = random_variants.index(1) + 1
                     for i in range(5):
