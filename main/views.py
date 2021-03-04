@@ -159,6 +159,18 @@ def indexHandler (request):
                 active_test.save()
                 request.session['endtest'] = 1
                 return JsonResponse({'success': True, 'errorMsg': '', '_success': True})
+            elif action == 'endalltest':
+                all_user_tests = UserTestItem.objects.all()
+                for aut in all_user_tests:
+                    active_test_questions = UserTestItemVariant.objects.filter(user_test_item__id=aut.id)
+                    s = 0
+                    for atq in active_test_questions:
+                        if atq.user_variant == atq.correct_variant and atq.user_variant != 0:
+                            s += 1
+                    aut.count_question = len(active_test_questions)
+                    aut.ball = s
+                    #active_test.stop_date = timezone.now()
+                    aut.save()
 
 
 
