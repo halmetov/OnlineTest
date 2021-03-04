@@ -334,7 +334,7 @@ body {
                 <tr>
                     <td>{{ tt.user }}</td>
                     <td>{{ tt.test.subject.title }}&nbsp;&nbsp; {{ tt.test.title }}</td>
-                    <td> {% if (tt.ball - 5) > 0 %} {{ tt.ball - 5 }} {% else %} {{ tt.ball }} {% endif %}</td>
+                    <td> 0</td>
                     {% if user.is_authenticated %}
                         <td><a class=" btn btn-success" href="/analize/{{ tt.id }}"> Открыть </a> </td>
                     {% endif %}
