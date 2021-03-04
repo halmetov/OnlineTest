@@ -12,6 +12,7 @@
             <th>ФИО</th>
             <th>Предмет</th>
             <th>Бал</th>
+            <th>Успели ответить</th>
         </tr>
     </thead>
     <tbody>
@@ -20,6 +21,7 @@
             <td>{{ tt.user }}</td>
             <td>{{ tt.test.subject.title }}&nbsp;&nbsp; {{ tt.test.title }}</td>
             <td>{{ tt.ball }}</td>
+            <td>{{tt.count_question}}</td>
         </tr>
     {% endfor %}
     </tbody>
