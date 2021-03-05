@@ -323,9 +323,7 @@ body {
                     <th >ФИО</th>
                     <th>Предмет</th>
                     <th>Бал</th>
-                    {% if user.is_authenticated %}
-                        <th>Подробно</th>
-                    {% endif %}
+                    <th>Подробно</th>
                     <!--<th>Подробно</th>-->
                 </tr>
             </thead>
@@ -335,9 +333,7 @@ body {
                     <td>{{ tt.user }}</td>
                     <td>{{ tt.test.subject.title }}&nbsp;&nbsp; {{ tt.test.title }}</td>
                     <td>  {{ tt.ball }}/{{tt.count_question}} </td>
-                    {% if user.is_authenticated %}
-                        <td><a class=" btn btn-success" href="/analize/{{ tt.id }}"> Открыть </a> </td>
-                    {% endif %}
+                    <td><a class=" btn btn-success" href="/analize/{{ tt.id }}"> Открыть </a> </td>
                     <!--<td><a class=" btn btn-success" href="/analize/{{ tt.id }}"> Открыть </a> </td>-->
                 </tr>
             {% endfor %}
