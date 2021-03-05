@@ -411,6 +411,9 @@ def resultsHandler(request):
     oData['sort_key'] = sort_key
 
     if action == 'print':
+        new_tests = []
+        for test in tests:
+            new_test = test
         return render(request, 'results-print.html', oData)
     else:
         return render(request, 'results.html', oData)
