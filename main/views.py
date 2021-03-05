@@ -171,6 +171,15 @@ def indexHandler (request):
                     aut.ball = s
                     #active_test.stop_date = timezone.now()
                     aut.save()
+            elif action == 'coorect_true_variant':
+                old_test_item_id = int(request.POST.get('old_test_item_id', 0))
+                if old_test_item_id:
+                    ti = TestItem.objects.get(id=old_test_item_id)
+                    old_variants = UserTestItemVariant.objects.filter(test_item__id=old_test_item_id)
+                    for ov in old_variants:
+                        ov.correct_variant = ti.correct_answer
+                        ov.save()
+
 
 
 
