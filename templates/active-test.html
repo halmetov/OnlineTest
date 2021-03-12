@@ -11,14 +11,12 @@
 		const countDownEl = document.getElementById("countdown");
 		var interval = setInterval(updateCountdown, 1000);
 		function updateCountdown() {
-		console.log(time);
 		  const minutes = Math.floor(time / 60 );
 		  let seconds = time  % 60;
 		  seconds = seconds < 10 ? "0" + seconds:
 		  seconds;
 		  document.getElementById("countdown").innerHTML = "Оставшееся время: " + minutes + ":" + seconds;
 		  time--;
-		  console.log(time);
 		  if(time<=0){
 			$('.js-end-test').click();
 			clearInterval(interval);
@@ -61,7 +59,45 @@
 		<hr class="hr-2"><br>
 		<p class="question">{{ test_question.question }}</p>
 		<p class="answers">
-			<input {% if choosen_variant_info and choosen_variant_info.user_variant == 1 %} checked="checked" {% endif %} type="radio" id="answer1" value="1" name="answer" class="answer">
+			{% for i in random_variants %}
+				{% if i == 1 and test_question.answer_1|length > 0 %}
+				<input {% if choosen_variant_info and choosen_variant_info.user_variant == i %} checked="checked" {% endif %} type="radio" id="answer{{ i }}" value="{{ i }}" name="answer" class="answer">
+				<label class="label-answer" for="answer{{ i }}">
+					{{ test_question.answer_1 }}
+				</label>
+				<br>
+				{% endif %}
+				{% if i == 2 and test_question.answer_2|length > 0 %}
+				<input {% if choosen_variant_info and choosen_variant_info.user_variant == i %} checked="checked" {% endif %} type="radio" id="answer{{ i }}" value="{{ i }}" name="answer" class="answer">
+				<label class="label-answer" for="answer{{ i }}">
+					{{ test_question.answer_2 }}
+				</label>
+				<br>
+				{% endif %}
+				{% if i == 3 and test_question.answer_3|length > 0 %}
+				<input {% if choosen_variant_info and choosen_variant_info.user_variant == i %} checked="checked" {% endif %} type="radio" id="answer{{ i }}" value="{{ i }}" name="answer" class="answer">
+				<label class="label-answer" for="answer{{ i }}">
+					{{ test_question.answer_3 }}
+				</label>
+				<br>
+				{% endif %}
+				{% if i == 4 and test_question.answer_4|length > 0 %}
+				<input {% if choosen_variant_info and choosen_variant_info.user_variant == i %} checked="checked" {% endif %} type="radio" id="answer{{ i }}" value="{{ i }}" name="answer" class="answer">
+				<label class="label-answer" for="answer{{ i }}">
+					{{ test_question.answer_4 }}
+				</label>
+				<br>
+				{% endif %}
+				{% if i == 5 and test_question.answer_5|length > 0 %}
+				<input {% if choosen_variant_info and choosen_variant_info.user_variant == i %} checked="checked" {% endif %} type="radio" id="answer{{ i }}" value="{{ i }}" name="answer" class="answer">
+				<label class="label-answer" for="answer{{ i }}">
+					{{ test_question.answer_5 }}
+				</label>
+				<br>
+				{% endif %}
+			{% endfor %}
+
+			<!--<input {% if choosen_variant_info and choosen_variant_info.user_variant == 1 %} checked="checked" {% endif %} type="radio" id="answer1" value="1" name="answer" class="answer">
 			<label class="label-answer" for="answer1">{{ test_question.answer_1 }}</label>
 			<br>
 			<input {% if choosen_variant_info and choosen_variant_info.user_variant == 2 %} checked="checked" {% endif %} type="radio" id="answer2" value="2" name="answer" class="answer">
@@ -75,7 +111,7 @@
 			<br>
 			<input {% if choosen_variant_info and choosen_variant_info.user_variant == 5 %} checked="checked" {% endif %} type="radio"value="5"id="answer5" name="answer" class="answer">
 			<label class="label-answer"for="answer5">{{ test_question.answer_5 }}</label>
-			<br>
+			<br>-->
 		</p>
 		{% endif %}
 		<div class="nav-button">
@@ -155,7 +191,7 @@
 		  dataType: 'json',
 		  data: oData,
 		  success: function(){
-			location.reload();
+			//location.reload();
 		  }
 		})
 
