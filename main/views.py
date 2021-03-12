@@ -2,7 +2,7 @@ from django.shortcuts import render
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.http import JsonResponse
-from main.models import Test,TestItem, Subject, Class, User, UserTestItem, UserTestItemVariant
+from main.models import Test, TestItem, Subject, Class, User, UserTestItem, UserTestItemVariant
 import random
 import math
 # Create your views here.
@@ -10,7 +10,7 @@ import math
 def get_random_variants():
     vs = []
     while(len(vs)!=5):
-        rn = random.randint(1,5)
+        rn = random.randint(1, 5)
         if rn not in vs:
             vs.append(rn)
     return vs
@@ -223,7 +223,7 @@ def insertHandler(request):
         limit = int(request.POST.get('limit', 40))
         subject_id = int(request.POST.get('subject_id', 0))
         clas_id = int(request.POST.get('clas_id', 0))
-        questions = request.POST.get('questions','')
+        questions = request.POST.get('questions', '')
         print('*****'*100)
         if title and subject_id and clas_id and questions:
             all_questions = questions.split('***')
@@ -239,7 +239,7 @@ def insertHandler(request):
             test_created = True
 
             for aq in all_questions:
-                one_question = aq.strip()
+                one_question = aq.strip() + '$$$'
                 ques_and_variants = one_question.split('$')
                 if len(ques_and_variants) > 5:
                     new_test_item = TestItem()

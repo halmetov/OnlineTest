@@ -60,15 +60,41 @@
 		<p class="question">{{ test_question.question }}</p>
 		<p class="answers">
 			{% for i in random_variants %}
+				{% if i == 1 and test_question.answer_1|length > 0 %}
 				<input {% if choosen_variant_info and choosen_variant_info.user_variant == i %} checked="checked" {% endif %} type="radio" id="answer{{ i }}" value="{{ i }}" name="answer" class="answer">
 				<label class="label-answer" for="answer{{ i }}">
-					{% if i == 1 %}{{ test_question.answer_1 }}{% endif %}
-					{% if i == 2 %}{{ test_question.answer_2 }}{% endif %}
-					{% if i == 3 %}{{ test_question.answer_3 }}{% endif %}
-					{% if i == 4 %}{{ test_question.answer_4 }}{% endif %}
-					{% if i == 5 %}{{ test_question.answer_5 }}{% endif %}
+					{{ test_question.answer_1 }}
 				</label>
 				<br>
+				{% endif %}
+				{% if i == 2 and test_question.answer_2|length > 0 %}
+				<input {% if choosen_variant_info and choosen_variant_info.user_variant == i %} checked="checked" {% endif %} type="radio" id="answer{{ i }}" value="{{ i }}" name="answer" class="answer">
+				<label class="label-answer" for="answer{{ i }}">
+					{{ test_question.answer_2 }}
+				</label>
+				<br>
+				{% endif %}
+				{% if i == 3 and test_question.answer_3|length > 0 %}
+				<input {% if choosen_variant_info and choosen_variant_info.user_variant == i %} checked="checked" {% endif %} type="radio" id="answer{{ i }}" value="{{ i }}" name="answer" class="answer">
+				<label class="label-answer" for="answer{{ i }}">
+					{{ test_question.answer_3 }}
+				</label>
+				<br>
+				{% endif %}
+				{% if i == 4 and test_question.answer_4|length > 0 %}
+				<input {% if choosen_variant_info and choosen_variant_info.user_variant == i %} checked="checked" {% endif %} type="radio" id="answer{{ i }}" value="{{ i }}" name="answer" class="answer">
+				<label class="label-answer" for="answer{{ i }}">
+					{{ test_question.answer_4 }}
+				</label>
+				<br>
+				{% endif %}
+				{% if i == 5 and test_question.answer_5|length > 0 %}
+				<input {% if choosen_variant_info and choosen_variant_info.user_variant == i %} checked="checked" {% endif %} type="radio" id="answer{{ i }}" value="{{ i }}" name="answer" class="answer">
+				<label class="label-answer" for="answer{{ i }}">
+					{{ test_question.answer_5 }}
+				</label>
+				<br>
+				{% endif %}
 			{% endfor %}
 
 			<!--<input {% if choosen_variant_info and choosen_variant_info.user_variant == 1 %} checked="checked" {% endif %} type="radio" id="answer1" value="1" name="answer" class="answer">
