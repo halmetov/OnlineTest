@@ -159,6 +159,27 @@ def indexHandler (request):
                 active_test.save()
                 request.session['endtest'] = 1
                 return JsonResponse({'success': True, 'errorMsg': '', '_success': True})
+            elif action == 'endalltest':
+                all_user_tests = UserTestItem.objects.all()
+                for aut in all_user_tests:
+                    active_test_questions = UserTestItemVariant.objects.filter(user_test_item__id=aut.id)
+                    s = 0
+                    for atq in active_test_questions:
+                        if atq.user_variant == atq.correct_variant and atq.user_variant != 0:
+                            s += 1
+                    aut.count_question = len(active_test_questions)
+                    aut.ball = s
+                    #active_test.stop_date = timezone.now()
+                    aut.save()
+            elif action == 'coorect_true_variant':
+                old_test_item_id = int(request.POST.get('old_test_item_id', 0))
+                if old_test_item_id:
+                    ti = TestItem.objects.get(id=old_test_item_id)
+                    old_variants = UserTestItemVariant.objects.filter(test_item__id=old_test_item_id)
+                    for ov in old_variants:
+                        ov.correct_variant = ti.correct_answer
+                        ov.save()
+
 
 
 
@@ -244,21 +265,21 @@ def insertHandler(request):
                 if len(ques_and_variants) > 5:
                     new_test_item = TestItem()
                     new_test_item.test = new_test
-                    new_test_item.question = ques_and_variants[0].strip()
+                    new_test_item.question = ques_and_variants[0].strip().replace('\n','<br>')
                     random_variants = get_random_variants()
                     new_test_item.correct_answer = random_variants.index(1) + 1
                     for i in range(5):
                         j = random_variants[i]
                         if i == 0:
-                            new_test_item.answer_1 = ques_and_variants[j].strip()
+                            new_test_item.answer_1 = ques_and_variants[j].strip().replace('\n','<br>')
                         elif i == 1:
-                            new_test_item.answer_2 = ques_and_variants[j].strip()
+                            new_test_item.answer_2 = ques_and_variants[j].strip().replace('\n','<br>')
                         elif i == 2:
-                            new_test_item.answer_3 = ques_and_variants[j].strip()
+                            new_test_item.answer_3 = ques_and_variants[j].strip().replace('\n','<br>')
                         elif i == 3:
-                            new_test_item.answer_4 = ques_and_variants[j].strip()
+                            new_test_item.answer_4 = ques_and_variants[j].strip().replace('\n','<br>')
                         elif i == 4:
-                            new_test_item.answer_5 = ques_and_variants[j].strip()
+                            new_test_item.answer_5 = ques_and_variants[j].strip().replace('\n','<br>')
 
                     new_test_item.save()
                     success_variants_count=success_variants_count+1
@@ -399,6 +420,9 @@ def resultsHandler(request):
     oData['sort_key'] = sort_key
 
     if action == 'print':
+        new_tests = []
+        for test in tests:
+            new_test = test
         return render(request, 'results-print.html', oData)
     else:
         return render(request, 'results.html', oData)
