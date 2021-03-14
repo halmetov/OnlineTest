@@ -2,7 +2,8 @@ from django.shortcuts import render
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.http import JsonResponse
-from main.models import Test, TestItem, Subject, Class, User, UserTestItem, UserTestItemVariant
+from main.models import Test, TestItem, Subject, Class, User, UserTestItem, UserTestItemVariant, SurveyCategory, Survey, \
+    Question, UserSurvey, UserSurveyItem, Comment
 import random
 import math
 # Create your views here.
@@ -159,6 +160,27 @@ def indexHandler (request):
                 active_test.save()
                 request.session['endtest'] = 1
                 return JsonResponse({'success': True, 'errorMsg': '', '_success': True})
+            elif action == 'endalltest':
+                all_user_tests = UserTestItem.objects.all()
+                for aut in all_user_tests:
+                    active_test_questions = UserTestItemVariant.objects.filter(user_test_item__id=aut.id)
+                    s = 0
+                    for atq in active_test_questions:
+                        if atq.user_variant == atq.correct_variant and atq.user_variant != 0:
+                            s += 1
+                    aut.count_question = len(active_test_questions)
+                    aut.ball = s
+                    #active_test.stop_date = timezone.now()
+                    aut.save()
+            elif action == 'coorect_true_variant':
+                old_test_item_id = int(request.POST.get('old_test_item_id', 0))
+                if old_test_item_id:
+                    ti = TestItem.objects.get(id=old_test_item_id)
+                    old_variants = UserTestItemVariant.objects.filter(test_item__id=old_test_item_id)
+                    for ov in old_variants:
+                        ov.correct_variant = ti.correct_answer
+                        ov.save()
+
 
 
 
@@ -244,21 +266,21 @@ def insertHandler(request):
                 if len(ques_and_variants) > 5:
                     new_test_item = TestItem()
                     new_test_item.test = new_test
-                    new_test_item.question = ques_and_variants[0].strip()
+                    new_test_item.question = ques_and_variants[0].strip().replace('\n','<br>')
                     random_variants = get_random_variants()
                     new_test_item.correct_answer = random_variants.index(1) + 1
                     for i in range(5):
                         j = random_variants[i]
                         if i == 0:
-                            new_test_item.answer_1 = ques_and_variants[j].strip()
+                            new_test_item.answer_1 = ques_and_variants[j].strip().replace('\n','<br>')
                         elif i == 1:
-                            new_test_item.answer_2 = ques_and_variants[j].strip()
+                            new_test_item.answer_2 = ques_and_variants[j].strip().replace('\n','<br>')
                         elif i == 2:
-                            new_test_item.answer_3 = ques_and_variants[j].strip()
+                            new_test_item.answer_3 = ques_and_variants[j].strip().replace('\n','<br>')
                         elif i == 3:
-                            new_test_item.answer_4 = ques_and_variants[j].strip()
+                            new_test_item.answer_4 = ques_and_variants[j].strip().replace('\n','<br>')
                         elif i == 4:
-                            new_test_item.answer_5 = ques_and_variants[j].strip()
+                            new_test_item.answer_5 = ques_and_variants[j].strip().replace('\n','<br>')
 
                     new_test_item.save()
                     success_variants_count=success_variants_count+1
@@ -399,6 +421,9 @@ def resultsHandler(request):
     oData['sort_key'] = sort_key
 
     if action == 'print':
+        new_tests = []
+        for test in tests:
+            new_test = test
         return render(request, 'results-print.html', oData)
     else:
         return render(request, 'results.html', oData)
@@ -425,3 +450,82 @@ def analizeHandler(request, test_id):
 
 
     return render(request, 'analize.html', {'test_user_item_variants':test_user_item_variants, 'test_info':test_info})
+
+
+def surveyHandler(request):
+    request.session['user_id'] = None
+    request.session['active_test_id'] = None
+
+    category_id = int(request.GET.get('category_id', 0))
+
+    limit = int(request.GET.get('limit', 3))
+    p = int(request.GET.get('p', 1))
+    stop = p * limit
+    start = (p - 1) * limit
+
+    if category_id:
+        surveys = Survey.objects.filter(status=0).filter(category__id=category_id)[start:stop]
+        item_count = Survey.objects.filter(status=0).filter(category__id=category_id).count()
+    else:
+        surveys = Survey.objects.filter()[start:stop]
+        item_count =Survey.objects.count()
+
+    page_count = math.ceil(item_count / limit)
+
+    page_range = range(1, page_count + 1)
+    prev_p = p - 1
+    next_p = p + 1
+    categories = SurveyCategory.objects.filter()
+
+    return render(request, 'survey.html', {
+        'categories': categories,
+        'surveys': surveys,
+        'category_id': category_id,
+
+        'limit': limit,
+        'item_count': item_count,
+        'p': p,
+        'page_count': page_count,
+        'page_range': page_range,
+        'prev_p': prev_p,
+        'next_p': next_p,
+    })
+
+
+
+
+def surveyItemHandler(request, survey_item_id):
+    request.session['user_id'] = None
+    request.session['active_test_id'] = None
+
+    survey_item = Survey.objects.get(id=int(survey_item_id))
+    categories = SurveyCategory.objects.all()
+    surveys = Survey.objects.all()
+
+
+    return render(request, 'survey-item.html', {
+        'categories': categories,
+        'surveys': surveys,
+        'survey_item': survey_item
+    })
+
+
+
+def surveyItemStartHandler(request, survey_item_id):
+    request.session['user_id'] = None
+    request.session['active_test_id'] = None
+
+    survey_item = Survey.objects.get(id=int(survey_item_id))
+    questions = Question.objects.filter(survey__id=int(survey_item_id))
+
+
+
+    return render(request, 'survey-question.html', {
+        'questions': questions,
+        'survey_item': survey_item,
+
+    })
+
+
+
+

@@ -1,6 +1,7 @@
 body  , a , li , div , p , span , ul {
 	margin: 0 auto;
 	padding: 0px;
+	user-select: none;
 }
 a{
     text-decoration:none;

@@ -196,6 +196,7 @@ body {
 
       <div class="navbar-nav ml-auto ">
         <a href="/" class="nav-item nav-link "><i class="fa fa-home"></i><span>Главная</span></a>
+          <a href="/survey" class="nav-item nav-link "><i class="fa fa-bars"></i><span>Опросы</span></a>
         <a href="/results" class="nav-item nav-link active"><i class="fa fa-database"></i><span>Результаты</span></a>
         <a href="/davay" class="nav-item nav-link"><i class="fa fa-sign-out"></i><span>Выход</span></a>
       </div>
@@ -324,6 +325,7 @@ body {
                     <th>Предмет</th>
                     <th>Бал</th>
                     <th>Подробно</th>
+                    <!--<th>Подробно</th>-->
                 </tr>
             </thead>
             <tbody>
@@ -331,8 +333,9 @@ body {
                 <tr>
                     <td>{{ tt.user }}</td>
                     <td>{{ tt.test.subject.title }}&nbsp;&nbsp; {{ tt.test.title }}</td>
-                    <td>{{ tt.ball }}</td>
+                    <td>  {{ tt.ball }}/{{tt.count_question}} </td>
                     <td><a class=" btn btn-success" href="/analize/{{ tt.id }}"> Открыть </a> </td>
+                    <!--<td><a class=" btn btn-success" href="/analize/{{ tt.id }}"> Открыть </a> </td>-->
                 </tr>
             {% endfor %}
             </tbody>

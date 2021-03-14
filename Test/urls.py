@@ -18,7 +18,8 @@ from django.urls import path
 from django.conf.urls import url
 from django.views.static import serve
 from Test import settings
-from main.views import indexHandler, davayHandler, resultsHandler, insertHandler, analizeHandler
+from main.views import indexHandler, davayHandler, resultsHandler, insertHandler, analizeHandler, surveyHandler, \
+    surveyItemHandler, surveyItemStartHandler
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,6 +27,9 @@ urlpatterns = [
         'document_root': settings.MEDIA_ROOT
     }),
     path('davay', davayHandler),
+    path('survey', surveyHandler),
+    path('survey/<int:survey_item_id>/', surveyItemHandler),
+    path('survey/<int:survey_item_id>/start/', surveyItemStartHandler),
     path('analize/<int:test_id>', analizeHandler),
     path('insert', insertHandler),
     path('results', resultsHandler),

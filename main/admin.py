@@ -63,4 +63,83 @@ admin.site.register(UserTestItemVariant, UserTestItemVariantAdmin)
 
 
 
+########################################################################
+
+class SurveyCategoryAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(SurveyCategory, SurveyCategoryAdmin)
+
+
+
+########################################################################
+
+class SurveyAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Survey, SurveyAdmin)
+
+
+
+########################################################################
+
+class QuestionAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Question, QuestionAdmin)
+
+
+
+
+########################################################################
+
+class UserSurveyAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(UserSurvey, UserSurveyAdmin)
+
+
+
+########################################################################
+
+class UserSurveyItemAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(UserSurveyItem, UserSurveyItemAdmin)
+
+
+
+########################################################################
+
+class CommentAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Comment, CommentAdmin)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
